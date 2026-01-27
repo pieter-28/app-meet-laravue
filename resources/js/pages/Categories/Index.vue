@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import ModalCreate from '@/pages/Categories/Add.vue';
@@ -9,6 +9,7 @@ import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { watchDebounced } from '@vueuse/core';
+import axios from 'axios';
 import { Loader2, LucidePencil, Search, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
@@ -86,10 +87,19 @@ const confirmDeleteType = () => {
 };
 
 const addForm = useForm({
-    code: 'CAT-' + Math.floor(100000 + Math.random() * 900000),
+    code: '',
     name: '',
     description: '',
 });
+
+const generateCode = async () => {
+    try {
+        const res = await axios.get('/categories/code');
+        addForm.code = res.data.code;
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 const editForm = useForm({
     code: '',
@@ -124,6 +134,7 @@ const updateTypeMeeting = () => {
 const openAddDialog = () => {
     isAddDialogOpen.value = true;
     editForm.reset();
+    generateCode();
 };
 
 const openEditDialog = (item: Categories) => {
@@ -160,15 +171,29 @@ watchDebounced(
     <Head title="Categories Meeting" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-6">
-            <!-- card -->
-            <Card class="border-b shadow-none">
-                <CardHeader class="flex items-center justify-between border-b">
-                    <CardTitle>Categories Meetings</CardTitle>
-                    <Button variant="default" size="sm" @click="openAddDialog"
-                        >+ Create</Button
-                    >
-                </CardHeader>
+            <Card>
                 <CardContent>
+                    <CardTitle class="mb-2 text-lg font-semibold">
+                        Categories Meetings
+                    </CardTitle>
+                    <p class="text-sm text-muted-foreground">
+                        Manage your categories meetings here. You can create,
+                        edit, and delete categories meetings as needed.
+                    </p>
+                </CardContent>
+            </Card>
+
+            <!-- card -->
+            <Card>
+                <CardContent>
+                    <div class="mb-4 flex items-center justify-start gap-2">
+                        <Button
+                            variant="default"
+                            size="sm"
+                            @click="openAddDialog"
+                            >+ Create</Button
+                        >
+                    </div>
                     <!-- search -->
                     <div class="mb-4 grid gap-4 md:grid-cols-3">
                         <div class="space-y-2">

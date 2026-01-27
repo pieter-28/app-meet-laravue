@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Aperture } from 'lucide-vue-next';
+import {
+    Airplay,
+    BookOpen,
+    BoxIcon,
+    Folder,
+    LayoutGrid,
+} from 'lucide-vue-next';
 
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -26,14 +32,14 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Type Meeting',
+        title: 'Type',
         href: '/type-meetings',
-        icon: Aperture,
+        icon: BoxIcon,
     },
     {
         title: 'Categories',
         href: '/categories',
-        icon: Folder,
+        icon: Airplay,
     },
 ];
 

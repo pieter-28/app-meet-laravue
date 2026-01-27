@@ -1,64 +1,103 @@
 <template>
-
     <Head title="Type Meeting" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-6">
+            <Card>
+                <CardContent>
+                    <CardTitle class="mb-2 text-lg font-semibold">
+                        Type Meeting Management
+                    </CardTitle>
+                    <p class="text-sm text-muted-foreground">
+                        Manage your type meetings here. You can create, edit,
+                        and delete type meetings as needed.
+                    </p>
+                </CardContent>
+            </Card>
 
             <!-- card -->
-            <Card class="border-b shadow-none">
-                <CardHeader class="flex items-center justify-between border-b">
-                    <CardTitle>Type Meetings</CardTitle>
-                    <Link href="/type-meetings/create">
-                        <Button variant="default" size="sm">+ Create</Button>
-                    </Link>
-                </CardHeader>
+            <Card>
                 <CardContent>
+                    <div class="mb-4 flex items-center justify-start gap-2">
+                        <Button
+                            variant="default"
+                            size="sm"
+                            @click="openAddDialog"
+                            >+ Create</Button
+                        >
+                    </div>
+
                     <!-- search -->
-                    <div class="grid gap-4 md:grid-cols-3 mb-4">
+                    <div class="mb-4 grid gap-4 md:grid-cols-3">
                         <div class="space-y-2">
                             <div class="relative w-64">
-                                <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input v-model="search" type="search" placeholder="Search type meetings..."
-                                    class="pl-8" />
+                                <Search
+                                    class="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground"
+                                />
+                                <Input
+                                    v-model="search"
+                                    type="search"
+                                    placeholder="Search type meetings..."
+                                    class="pl-8"
+                                />
                             </div>
                         </div>
                     </div>
                     <!-- end search -->
 
                     <!-- table -->
-                    <div v-if="props.typeMeetings?.data?.length > 0" class="space-y-4">
+                    <div
+                        v-if="props.typeMeetings?.data?.length > 0"
+                        class="space-y-4"
+                    >
                         <div class="rounded-md border">
                             <table class="w-full caption-bottom text-sm">
                                 <thead class="text-center [&_tr]:border-b">
-                                    <tr class="border-b transition-colors hover:bg-muted">
-                                        <th class="px-4 py-2 text-left font-semibold">
+                                    <tr
+                                        class="border-b transition-colors hover:bg-muted"
+                                    >
+                                        <th
+                                            class="px-4 py-2 text-left font-semibold"
+                                        >
                                             No
                                         </th>
-                                        <th class="px-4 py-2 text-left font-semibold">
+                                        <th
+                                            class="px-4 py-2 text-left font-semibold"
+                                        >
                                             Code
                                         </th>
-                                        <th class="px-4 py-2 text-left font-semibold">
+                                        <th
+                                            class="px-4 py-2 text-left font-semibold"
+                                        >
                                             Name
                                         </th>
-                                        <th class="px-4 py-2 text-left font-semibold">
+                                        <th
+                                            class="px-4 py-2 text-left font-semibold"
+                                        >
                                             Description
                                         </th>
-                                        <th class="px-4 py-2 text-left font-semibold">
+                                        <th
+                                            class="px-4 py-2 text-left font-semibold"
+                                        >
                                             Action
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody class="[&_tr:last-child]:border-0">
-                                    <tr v-for="(type, index) in props
-                                        .typeMeetings.data" :key="type.id"
-                                        class="border-b transition-colors hover:bg-muted/50">
-                                        <td class="p-2 w-2 text-center align-middle">
+                                    <tr
+                                        v-for="(type, index) in props
+                                            .typeMeetings.data"
+                                        :key="type.id"
+                                        class="border-b transition-colors hover:bg-muted/50"
+                                    >
+                                        <td
+                                            class="w-2 p-2 text-center align-middle"
+                                        >
                                             {{
                                                 (props.typeMeetings
                                                     .current_page -
                                                     1) *
-                                                props.typeMeetings
-                                                    .per_page +
+                                                    props.typeMeetings
+                                                        .per_page +
                                                 index +
                                                 1
                                             }}
@@ -80,16 +119,28 @@
                                         </td>
 
                                         <td class="space-x-4 p-2 align-middle">
-                                            <Button size="sm" @click="openEditDialog(type)" variant="secondary">
+                                            <Button
+                                                size="sm"
+                                                @click="openEditDialog(type)"
+                                                variant="secondary"
+                                            >
                                                 <LucidePencil class="h-4 w-4" />
                                             </Button>
 
-                                            <Button size="sm" variant="destructive" @click="deleteType(type.id)"
-                                                :disabled="deleteTypeId === type.id
-                                                    ">
-                                                <Loader2 v-if="
+                                            <Button
+                                                size="sm"
+                                                variant="destructive"
+                                                @click="deleteType(type.id)"
+                                                :disabled="
                                                     deleteTypeId === type.id
-                                                " class="h-4 w-4 animate-spin" />
+                                                "
+                                            >
+                                                <Loader2
+                                                    v-if="
+                                                        deleteTypeId === type.id
+                                                    "
+                                                    class="h-4 w-4 animate-spin"
+                                                />
                                                 <Trash v-else class="h-4 w-4" />
                                             </Button>
                                         </td>
@@ -107,16 +158,24 @@
                             </p>
 
                             <div class="flex items-center gap-1">
-                                <Link v-for="(link, i) in props.typeMeetings
-                                    .links" :key="i" :href="link.url ?? ''" preserve-state preserve-scroll
-                                    v-html="link.label" class="rounded-md px-3 py-1 text-sm" :class="{
+                                <Link
+                                    v-for="(link, i) in props.typeMeetings
+                                        .links"
+                                    :key="i"
+                                    :href="link.url ?? ''"
+                                    preserve-state
+                                    preserve-scroll
+                                    v-html="link.label"
+                                    class="rounded-md px-3 py-1 text-sm"
+                                    :class="{
                                         'bg-primary text-primary-foreground':
                                             link.active,
                                         'pointer-events-none opacity-50':
                                             !link.url,
                                         'hover:bg-muted':
                                             link.url && !link.active,
-                                    }" />
+                                    }"
+                                />
                             </div>
                         </div>
                     </div>
@@ -130,30 +189,47 @@
             </Card>
             <!-- end card -->
 
+            <!-- Start Add Task Dialog -->
+            <ModalAdd
+                :add-form="addForm"
+                v-model:open="isAddDialogOpen"
+                @confirm="storeData"
+            />
+            <!-- End Add Task Dialog -->
+
             <!-- Start Edit Task Dialog -->
-            <Modal :edit-form="editForm" v-model:open="isEditDialogOpen" :editing-task="!!editingTask"
-                @confirm="updateTypeMeeting" />
+            <Modal
+                :edit-form="editForm"
+                v-model:open="isEditDialogOpen"
+                :editing-task="!!editingTask"
+                @confirm="updateTypeMeeting"
+            />
             <!-- End Edit Task Dialog -->
 
-            <Alert v-model:open="isDeleteDialogOpen" @confirm="confirmDeleteType" />
+            <Alert
+                v-model:open="isDeleteDialogOpen"
+                @confirm="confirmDeleteType"
+            />
         </div>
     </AppLayout>
 </template>
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-vue-next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/AppLayout.vue';
+import ModalAdd from '@/pages/TypeMeeting/Add.vue';
+import Modal from '@/pages/TypeMeeting/Modal.vue';
+import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { Loader2, LucidePencil, Trash } from 'lucide-vue-next';
+import { watchDebounced } from '@vueuse/core';
+import axios from 'axios';
+import { Loader2, LucidePencil, Search, Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 import Alert from '../alert.vue';
-import Modal from '@/pages/TypeMeeting/Modal.vue';
-import { dashboard } from '@/routes';
 
 interface TypeMeeting {
     id: number;
@@ -203,6 +279,7 @@ const typeIdToDelete = ref<number | null>(null);
 const deleteTypeId = ref<number | null>(null);
 
 const isEditDialogOpen = ref(false);
+const isAddDialogOpen = ref(false);
 const editingTask = ref<TypeMeeting | null>(null);
 
 const deleteType = (id: number) => {
@@ -224,11 +301,37 @@ const confirmDeleteType = () => {
     });
 };
 
+const addForm = useForm({
+    type_meeting_code: '',
+    type_meeting_name: '',
+    type_meeting_description: '',
+});
+
 const editForm = useForm({
     type_meeting_code: '',
     type_meeting_name: '',
     type_meeting_description: '',
 });
+
+const generateCode = async () => {
+    try {
+        const res = await axios.get('/type-meetings/code');
+        addForm.type_meeting_code = res.data.code;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const storeData = async () => {
+    await addForm.post('/type-meetings', {
+        preserveScroll: true,
+        onSuccess: () => {
+            isAddDialogOpen.value = false;
+            addForm.reset();
+            toast.success('Type Meeting created successfully!');
+        },
+    });
+};
 
 const updateTypeMeeting = () => {
     if (!editingTask.value) return;
@@ -243,6 +346,11 @@ const updateTypeMeeting = () => {
     });
 };
 
+const openAddDialog = () => {
+    isAddDialogOpen.value = true;
+    addForm.reset();
+    generateCode();
+};
 const openEditDialog = (item: TypeMeeting) => {
     editingTask.value = { ...item };
     editForm.type_meeting_code = item.type_meeting_code;
@@ -252,7 +360,6 @@ const openEditDialog = (item: TypeMeeting) => {
 };
 
 const search = ref(props.filters.search ?? '');
-import { watchDebounced } from '@vueuse/core';
 
 watchDebounced(
     search,
@@ -267,10 +374,9 @@ watchDebounced(
                 preserveState: true,
                 preserveScroll: true,
                 replace: true,
-            }
+            },
         );
     },
-    { debounce: 300 }
+    { debounce: 300 },
 );
-
 </script>

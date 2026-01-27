@@ -21,6 +21,8 @@ Route::get('dashboard', function () {
 require __DIR__ . '/settings.php';
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('type-meetings/code', [TypeMeetingController::class, 'code']);
+    Route::get('categories/code', [CategoryController::class, 'code']);
     Route::resource('type-meetings', TypeMeetingController::class);
     Route::resource('categories', CategoryController::class);
 });

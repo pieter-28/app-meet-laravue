@@ -17,57 +17,37 @@ class TypeMeetingController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('TypeMeeting/Index', [
-        'typeMeetings' => TypeMeeting::orderBy('id')
-            ->search($request->input('search'))
-            ->paginate(5)
-            ->withQueryString(),
+            'typeMeetings' => TypeMeeting::orderBy('id')->search($request->input('search'))->paginate(10)->withQueryString(),
 
-        'filters' => [
-            'search' => $request->input('search'),
-        ],
-    ]);
+            'filters' => [
+                'search' => $request->input('search'),
+            ],
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return Inertia::render('TypeMeeting/Create', [
-            'typeMeetings' => TypeMeeting::orderBy('id', 'ASC')->get(),
-        ]);
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreTypeMeetingRequest $request)
     {
-        $validate = $request->validated();
-        $validate['type_meeting_code'] = mt_rand('00000', '99999') . '-' . date('h:i:s') . '-' . Auth::id();
-        TypeMeeting::create($validate);
+        TypeMeeting::create($request->validated());
         return redirect()->route('type-meetings.index')->with('success', 'Type Meeting berhasil dibuat');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(TypeMeeting $typeMeeting)
-    {
-        return Inertia::render('TypeMeeting/Detail', [
-            'typeMeeting' => $typeMeeting,
-        ]);
-    }
+    public function show(TypeMeeting $typeMeeting) {}
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TypeMeeting $typeMeeting)
-    {
-        return Inertia::render('TypeMeeting/Edit', [
-            'typeMeeting' => $typeMeeting,
-        ]);
-    }
+    public function edit(TypeMeeting $typeMeeting) {}
 
     /**
      * Update the specified resource in storage.
@@ -85,5 +65,27 @@ class TypeMeetingController extends Controller
     {
         $typeMeeting->delete();
         return redirect()->route('type-meetings.index')->with('success', 'Type Meeting berhasil dihapus');
+    }
+
+    public function code()
+    {
+        $lastCode = TypeMeeting::whereNotNull('type_meeting_code')->orderBy('type_meeting_code', 'desc')->value('type_meeting_code');
+
+        $nextNumber = 1;
+
+        if ($lastCode) {
+            $lastNumber = (int) str_replace('TM-', '', $lastCode);
+            $nextNumber = $lastNumber + 1;
+        }
+
+        $code = 'TM-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+        return response()->json(
+            [
+                'message' => 'Code sucessfully',
+                'code' => $code,
+            ],
+            200,
+        );
     }
 }

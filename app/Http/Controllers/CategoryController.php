@@ -6,7 +6,6 @@ use App\Models\Category;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -16,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Category::query()->search($request->input('search'))->paginate(5)->withQueryString();
+        $data = Category::query()->search($request->input('search'))->paginate(10)->withQueryString();
         return Inertia::render('Categories/Index', [
             'categories' => $data,
             'filters' => [
@@ -38,9 +37,7 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        $validated = $request->validated();
-        $validated['code'] = mt_rand('100000', '999999') . date('YmdHis') . Auth::id();
-        Category::create($validated);
+        Category::create($request->validated());
         return redirect()->route('categories.index')->with('success', 'Kategori Berhasil Ditambahkan');
     }
 
@@ -81,5 +78,26 @@ class CategoryController extends Controller
     {
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Kategori Berhasil Dihapus');
+    }
+
+    public function code()
+    {
+        $lastCode = Category::whereNotNull('code')->orderBy('code', 'desc')->value('code');
+
+        $nextNumber = 1;
+
+        if ($lastCode) {
+            $lastNumber = (int) str_replace('CAT-', '', $lastCode);
+            $nextNumber = $lastNumber + 1;
+        }
+
+        $code = 'CAT-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        return response()->json(
+            [
+                'message' => 'Code sucessfully',
+                'code' => $code,
+            ],
+            200,
+        );
     }
 }
