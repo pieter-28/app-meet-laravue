@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -29,7 +29,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Categories/Create');
+        //
     }
 
     /**
@@ -44,11 +44,9 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show($id)
     {
-        return Inertia::render('Categories/Show', [
-            'category' => $category,
-        ]);
+        //
     }
 
     /**
@@ -56,9 +54,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return Inertia::render('Categories/Edit', [
-            'category' => $category,
-        ]);
+        //
     }
 
     /**
@@ -87,7 +83,7 @@ class CategoryController extends Controller
         $nextNumber = 1;
 
         if ($lastCode) {
-            $lastNumber = (int) str_replace('CAT-', '', $lastCode);
+            $lastNumber = (int)str_replace('CAT-', '', $lastCode);
             $nextNumber = $lastNumber + 1;
         }
 

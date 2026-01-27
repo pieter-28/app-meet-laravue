@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Type\StoreTypeMeetingRequest;
+use App\Http\Requests\Type\UpdateTypeMeetingRequest;
 use App\Models\TypeMeeting;
-use App\Http\Requests\StoreTypeMeetingRequest;
-use App\Http\Requests\UpdateTypeMeetingRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class TypeMeetingController extends Controller
@@ -17,8 +16,7 @@ class TypeMeetingController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('TypeMeeting/Index', [
-            'typeMeetings' => TypeMeeting::orderBy('id')->search($request->input('search'))->paginate(10)->withQueryString(),
-
+            'typeMeetings' => TypeMeeting::orderBy('id', 'ASC')->search($request->input('search'))->paginate(10)->withQueryString(),
             'filters' => [
                 'search' => $request->input('search'),
             ],
@@ -28,7 +26,10 @@ class TypeMeetingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {}
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -36,18 +37,25 @@ class TypeMeetingController extends Controller
     public function store(StoreTypeMeetingRequest $request)
     {
         TypeMeeting::create($request->validated());
+
         return redirect()->route('type-meetings.index')->with('success', 'Type Meeting berhasil dibuat');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(TypeMeeting $typeMeeting) {}
+    public function show(TypeMeeting $typeMeeting)
+    {
+        //
+    }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TypeMeeting $typeMeeting) {}
+    public function edit(TypeMeeting $typeMeeting)
+    {
+        //
+    }
 
     /**
      * Update the specified resource in storage.
@@ -55,6 +63,7 @@ class TypeMeetingController extends Controller
     public function update(UpdateTypeMeetingRequest $request, TypeMeeting $typeMeeting)
     {
         $typeMeeting->update($request->validated());
+
         return redirect()->route('type-meetings.index')->with('success', 'Type Meeting berhasil diupdate');
     }
 
@@ -64,6 +73,7 @@ class TypeMeetingController extends Controller
     public function destroy(TypeMeeting $typeMeeting)
     {
         $typeMeeting->delete();
+
         return redirect()->route('type-meetings.index')->with('success', 'Type Meeting berhasil dihapus');
     }
 
@@ -78,14 +88,11 @@ class TypeMeetingController extends Controller
             $nextNumber = $lastNumber + 1;
         }
 
-        $code = 'TM-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        $code = 'TM-'.str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        return response()->json(
-            [
-                'message' => 'Code sucessfully',
-                'code' => $code,
-            ],
-            200,
-        );
+        return response()->json([
+            'message' => 'Code sucessfully',
+            'code' => $code,
+        ], 200, );
     }
 }
