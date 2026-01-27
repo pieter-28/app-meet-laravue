@@ -30,6 +30,11 @@ const mainNavItems: NavItem[] = [
         href: '/type-meetings',
         icon: Aperture,
     },
+    {
+        title: 'Categories',
+        href: '/categories',
+        icon: Folder,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
