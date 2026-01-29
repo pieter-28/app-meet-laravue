@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from '@/components/ui/empty';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import ModalCreate from '@/pages/Categories/Add.vue';
@@ -10,7 +18,13 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { watchDebounced } from '@vueuse/core';
 import axios from 'axios';
-import { Loader2, LucidePencil, Search, Trash } from 'lucide-vue-next';
+import {
+    FolderCode,
+    Loader2,
+    LucidePencil,
+    Search,
+    Trash,
+} from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 import Alert from '../alert.vue';
@@ -171,31 +185,29 @@ watchDebounced(
     <Head title="Categories Meeting" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-6">
-            <Card>
-                <CardContent>
-                    <CardTitle class="mb-2 text-lg font-semibold">
-                        Categories Meetings
-                    </CardTitle>
-                    <p class="text-sm text-muted-foreground">
-                        Manage your categories meetings here. You can create,
-                        edit, and delete categories meetings as needed.
-                    </p>
-                </CardContent>
-            </Card>
+            <div class="mb-4">
+                <h5>Categories Meetings</h5>
+                <p class="text-sm text-muted-foreground">
+                    Manage your categories meetings here. You can create, edit,
+                    and delete categories meetings as needed.
+                </p>
+            </div>
 
+            <Button
+                v-if="props.categories?.data?.length > 0"
+                variant="default"
+                size="sm"
+                @click="openAddDialog"
+                >+ Create</Button
+            >
             <!-- card -->
             <Card>
                 <CardContent>
-                    <div class="mb-4 flex items-center justify-start gap-2">
-                        <Button
-                            variant="default"
-                            size="sm"
-                            @click="openAddDialog"
-                            >+ Create</Button
-                        >
-                    </div>
                     <!-- search -->
-                    <div class="mb-4 grid gap-4 md:grid-cols-3">
+                    <div
+                        v-if="props.categories?.data?.length > 0"
+                        class="mb-4 grid gap-4 md:grid-cols-3"
+                    >
                         <div class="space-y-2">
                             <div class="relative w-64">
                                 <Search
@@ -345,7 +357,25 @@ watchDebounced(
 
                     <!-- no data -->
                     <div v-else class="py-12 text-center text-muted-foreground">
-                        Data is not found.
+                        <Empty>
+                            <EmptyHeader>
+                                <EmptyMedia variant="icon">
+                                    <FolderCode />
+                                </EmptyMedia>
+                                <EmptyTitle>No Data Yet</EmptyTitle>
+                                <EmptyDescription>
+                                    You haven't created any categories yet. Get
+                                    started by creating your first category.
+                                </EmptyDescription>
+                            </EmptyHeader>
+                            <EmptyContent>
+                                <div class="flex gap-2">
+                                    <Button @click="openAddDialog"
+                                        >Create</Button
+                                    >
+                                </div>
+                            </EmptyContent>
+                        </Empty>
                     </div>
                 </CardContent>
             </Card>
