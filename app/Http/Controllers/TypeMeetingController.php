@@ -38,7 +38,7 @@ class TypeMeetingController extends Controller
     {
         TypeMeeting::create($request->validated());
 
-        return redirect()->route('type-meetings.index')->with('success', 'Type Meeting berhasil dibuat');
+        return redirect()->route('type-meetings.index')->with('success', 'Create data successfully');
     }
 
     /**
@@ -64,7 +64,7 @@ class TypeMeetingController extends Controller
     {
         $typeMeeting->update($request->validated());
 
-        return redirect()->route('type-meetings.index')->with('success', 'Type Meeting berhasil diupdate');
+        return redirect()->route('type-meetings.index')->with('success', 'Updated data successfully');
     }
 
     /**
@@ -74,7 +74,7 @@ class TypeMeetingController extends Controller
     {
         $typeMeeting->delete();
 
-        return redirect()->route('type-meetings.index')->with('success', 'Type Meeting berhasil dihapus');
+        return redirect()->route('type-meetings.index')->with('success', 'Deleted data successfully');
     }
 
     public function code()
@@ -88,11 +88,14 @@ class TypeMeetingController extends Controller
             $nextNumber = $lastNumber + 1;
         }
 
-        $code = 'TM-'.str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        $code = 'TM-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        return response()->json([
-            'message' => 'Code sucessfully',
-            'code' => $code,
-        ], 200, );
+        return response()->json(
+            [
+                'message' => 'Code sucessfully',
+                'code' => $code,
+            ],
+            200,
+        );
     }
 }
