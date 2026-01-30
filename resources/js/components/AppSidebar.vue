@@ -24,6 +24,7 @@ import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 
 import AppLogo from './AppLogo.vue';
+import NavMaster from '@/components/NavMaster.vue';
 
 const mainNavItems: NavItem[] = [
     {
@@ -31,13 +32,16 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+];
+
+const masterNavItems: NavItem[] = [
     {
-        title: 'Type',
+        title: 'Tipe',
         href: '/type-meetings',
         icon: BoxIcon,
     },
     {
-        title: 'Categories',
+        title: 'Kategori',
         href: '/categories',
         icon: Airplay,
     },
@@ -73,6 +77,7 @@ const footerNavItems: NavItem[] = [
 
         <SidebarContent>
             <NavMain :items="mainNavItems" />
+            <NavMaster :items="masterNavItems" />
         </SidebarContent>
 
         <SidebarFooter>
