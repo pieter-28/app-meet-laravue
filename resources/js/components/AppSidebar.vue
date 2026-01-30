@@ -6,6 +6,7 @@ import {
     BoxIcon,
     Folder,
     LayoutGrid,
+    BookText,
 } from 'lucide-vue-next';
 
 import NavFooter from '@/components/NavFooter.vue';
@@ -44,6 +45,11 @@ const masterNavItems: NavItem[] = [
         title: 'Kategori',
         href: '/categories',
         icon: Airplay,
+    },
+    {
+        title: 'Topic',
+        href: '/topic',
+        icon: BookText,
     },
 ];
 
