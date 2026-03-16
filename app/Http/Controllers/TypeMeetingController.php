@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Type\StoreTypeMeetingRequest;
 use App\Http\Requests\Type\UpdateTypeMeetingRequest;
-use App\Models\TypeMeeting;
+use App\Models\Type;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,7 +16,7 @@ class TypeMeetingController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('TypeMeeting/Index', [
-            'typeMeetings' => TypeMeeting::orderBy('id', 'ASC')->search($request->input('search'))->paginate(10)->withQueryString(),
+            'typeMeetings' => Type::orderBy('id', 'ASC')->search($request->input('search'))->paginate(10)->withQueryString(),
             'filters' => [
                 'search' => $request->input('search'),
             ],
@@ -36,7 +36,7 @@ class TypeMeetingController extends Controller
      */
     public function store(StoreTypeMeetingRequest $request)
     {
-        TypeMeeting::create($request->validated());
+        Type::create($request->validated());
 
         return redirect()->route('type-meetings.index')->with('success', 'Create data successfully');
     }
@@ -44,7 +44,7 @@ class TypeMeetingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TypeMeeting $typeMeeting)
+    public function show(Type $typeMeeting)
     {
         //
     }
@@ -52,7 +52,7 @@ class TypeMeetingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TypeMeeting $typeMeeting)
+    public function edit(Type $typeMeeting)
     {
         //
     }
@@ -60,9 +60,9 @@ class TypeMeetingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTypeMeetingRequest $request, TypeMeeting $typeMeeting)
+    public function update(UpdateTypeMeetingRequest $request, Type $type)
     {
-        $typeMeeting->update($request->validated());
+        $type->update($request->validated());
 
         return redirect()->route('type-meetings.index')->with('success', 'Updated data successfully');
     }
@@ -70,16 +70,16 @@ class TypeMeetingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TypeMeeting $typeMeeting)
+    public function destroy(Type $type)
     {
-        $typeMeeting->delete();
+        $type->delete();
 
         return redirect()->route('type-meetings.index')->with('success', 'Deleted data successfully');
     }
 
     public function code()
     {
-        $lastCode = TypeMeeting::whereNotNull('type_meeting_code')->orderBy('type_meeting_code', 'desc')->value('type_meeting_code');
+        $lastCode = Type::whereNotNull('type_meeting_code')->orderBy('type_meeting_code', 'desc')->value('type_meeting_code');
 
         $nextNumber = 1;
 

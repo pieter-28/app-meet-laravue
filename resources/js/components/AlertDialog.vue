@@ -32,11 +32,13 @@ const emit = defineEmits<{
             </div>
 
             <AlertDialogHeader class="space-y-2 text-center">
-                <AlertDialogTitle class="text-lg text-center font-semibold">
+                <AlertDialogTitle class="text-center text-lg font-semibold">
                     Apakah Anda Yakin?
                 </AlertDialogTitle>
 
-                <AlertDialogDescription class="text-sm text-center text-muted-foreground">
+                <AlertDialogDescription
+                    class="text-center text-sm text-muted-foreground"
+                >
                     Tindakan ini akan menghapus data secara permanen dan tidak
                     dapat dibatalkan.
                 </AlertDialogDescription>
@@ -49,7 +51,7 @@ const emit = defineEmits<{
 
                 <AlertDialogAction
                     variant="destructive"
-                    class="min-w-[100px] bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                    class="min-w-[100px] bg-red-600 text-white hover:bg-red-700 focus:ring-red-600"
                     @click="emit('confirm')"
                 >
                     Hapus

@@ -21,7 +21,7 @@ class UpdateTypeMeetingRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('type_meeting')->id;
+        $id = $this->route('type')->id;
         return [
             'type_meeting_code' => 'nullable',
             'type_meeting_name' => 'required|unique:type_meetings,type_meeting_name,' . $id,

@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TypeMeeting extends Model
+class Type extends Model
 {
+    protected $table = 'type_meetings';
     protected $fillable = ['type_meeting_code', 'type_meeting_name', 'type_meeting_description'];
 
     public function scopeSearch($query, $search)

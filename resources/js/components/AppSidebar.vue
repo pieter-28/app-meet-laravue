@@ -7,6 +7,7 @@ import {
     Folder,
     LayoutGrid,
     BookText,
+    Building2,
 } from 'lucide-vue-next';
 
 import AppLogo from '@/components/AppLogo.vue';
@@ -49,6 +50,11 @@ const masterNavItems: NavItem[] = [
         title: 'Topic',
         href: '/topic',
         icon: BookText,
+    },
+    {
+        title: 'Place',
+        href: '/place',
+        icon: Building2,
     },
 ];
 
