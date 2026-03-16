@@ -1,6 +1,15 @@
 <script setup lang="ts">
+import Alert from '@/components/AlertDialog.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
     Empty,
     EmptyContent,
@@ -10,6 +19,14 @@ import {
     EmptyTitle,
 } from '@/components/ui/empty';
 import { Input } from '@/components/ui/input';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import ModalAdd from '@/pages/TypeMeeting/Add.vue';
 import Modal from '@/pages/TypeMeeting/Modal.vue';
@@ -22,12 +39,13 @@ import {
     FolderCode,
     Loader2,
     LucidePencil,
+    MoreHorizontal,
     Search,
     Trash,
+    User,
 } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
-import Alert from '../alert.vue';
 
 interface TypeMeeting {
     id: number;
@@ -182,42 +200,52 @@ watchDebounced(
 <template>
     <Head title="Type Meeting" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="space-y-6 p-6">
-            <div class="mb-4">
-                <h5>Master Type Meetings</h5>
+        <div class="space-y-6 p-12">
+            <div>
+                <h1 class="text-xl font-semibold">Type Meeting</h1>
                 <p class="text-sm text-muted-foreground">
-                    Manage your type meetings here. You can create, edit, and
-                    delete type meetings as needed.
+                    Manage and organize all type meetings here.
                 </p>
             </div>
 
-            <Button
-                v-if="props.typeMeetings?.data?.length > 0"
-                variant="default"
-                size="sm"
-                @click="openAddDialog"
-                >+ Create</Button
-            >
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <User class="h-4 w-4" />
+                        <p class="font-semibold">List Type Meeting</p>
+                    </div>
+
+                    <p class="text-sm text-muted-foreground">
+                        Here is the list of all Type meetings.
+                    </p>
+                </div>
+
+                <Button
+                    v-if="props.typeMeetings?.data?.length > 0"
+                    variant="default"
+                    size="sm"
+                    @click="openAddDialog"
+                    >+ Create</Button
+                >
+            </div>
 
             <Card>
                 <CardContent>
                     <!-- search -->
                     <div
                         v-if="props.typeMeetings?.data?.length > 0"
-                        class="mb-4 grid gap-4 md:grid-cols-3"
+                        class="mb-4 flex items-center justify-between gap-4"
                     >
-                        <div class="space-y-2">
-                            <div class="relative w-64">
-                                <Search
-                                    class="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground"
-                                />
-                                <Input
-                                    v-model="search"
-                                    type="search"
-                                    placeholder="Search type meetings..."
-                                    class="pl-8"
-                                />
-                            </div>
+                        <div class="relative w-64">
+                            <Search
+                                class="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground"
+                            />
+                            <Input
+                                v-model="search"
+                                type="search"
+                                placeholder="Search topic meetings..."
+                                class="pl-8"
+                            />
                         </div>
                     </div>
                     <!-- end search -->
@@ -228,48 +256,25 @@ watchDebounced(
                         class="space-y-4"
                     >
                         <div class="rounded-md border">
-                            <table class="w-full caption-bottom text-sm">
-                                <thead class="text-center [&_tr]:border-b">
-                                    <tr
-                                        class="border-b transition-colors hover:bg-muted"
-                                    >
-                                        <th
-                                            class="px-4 py-2 text-left font-semibold"
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>No</TableHead>
+                                        <TableHead>Code</TableHead>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead class="text-center"
+                                            >Action</TableHead
                                         >
-                                            No
-                                        </th>
-                                        <th
-                                            class="px-4 py-2 text-left font-semibold"
-                                        >
-                                            Code
-                                        </th>
-                                        <th
-                                            class="px-4 py-2 text-left font-semibold"
-                                        >
-                                            Name
-                                        </th>
-                                        <th
-                                            class="px-4 py-2 text-left font-semibold"
-                                        >
-                                            Description
-                                        </th>
-                                        <th
-                                            class="px-4 py-2 text-left font-semibold"
-                                        >
-                                            Action
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="[&_tr:last-child]:border-0">
-                                    <tr
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody class="max-h-96 overflow-y-auto">
+                                    <TableRow
                                         v-for="(type, index) in props
                                             .typeMeetings.data"
                                         :key="type.id"
-                                        class="border-b transition-colors hover:bg-muted/50"
                                     >
-                                        <td
-                                            class="w-2 p-2 text-center align-middle"
-                                        >
+                                        <TableCell>
                                             {{
                                                 (props.typeMeetings
                                                     .current_page -
@@ -279,52 +284,80 @@ watchDebounced(
                                                 index +
                                                 1
                                             }}
-                                        </td>
+                                        </TableCell>
+                                        <TableCell>{{
+                                            type.type_meeting_code
+                                        }}</TableCell>
+                                        <TableCell>{{
+                                            type.type_meeting_name
+                                        }}</TableCell>
+                                        <TableCell>{{
+                                            type.type_meeting_description ?? '-'
+                                        }}</TableCell>
+                                        <TableCell
+                                            class="space-x-2 text-center"
+                                        >
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger as-child>
+                                                    <Button
+                                                        variant="ghost"
+                                                        class="h-8 w-8 p-0"
+                                                    >
+                                                        <span class="sr-only"
+                                                            >Open menu</span
+                                                        >
+                                                        <MoreHorizontal
+                                                            class="h-4 w-4"
+                                                        />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
 
-                                        <td class="p-2 align-middle">
-                                            {{ type.type_meeting_code }}
-                                        </td>
-
-                                        <td class="p-2 align-middle">
-                                            {{ type.type_meeting_name }}
-                                        </td>
-
-                                        <td class="p-2 align-middle">
-                                            {{
-                                                type.type_meeting_description ??
-                                                '-'
-                                            }}
-                                        </td>
-
-                                        <td class="space-x-4 p-2 align-middle">
-                                            <Button
-                                                size="sm"
-                                                @click="openEditDialog(type)"
-                                                variant="secondary"
-                                            >
-                                                <LucidePencil class="h-4 w-4" />
-                                            </Button>
-
-                                            <Button
-                                                size="sm"
-                                                variant="destructive"
-                                                @click="deleteType(type.id)"
-                                                :disabled="
-                                                    deleteTypeId === type.id
-                                                "
-                                            >
-                                                <Loader2
-                                                    v-if="
-                                                        deleteTypeId === type.id
-                                                    "
-                                                    class="h-4 w-4 animate-spin"
-                                                />
-                                                <Trash v-else class="h-4 w-4" />
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                                <DropdownMenuContent
+                                                    align="end"
+                                                >
+                                                    <DropdownMenuLabel
+                                                        >Action</DropdownMenuLabel
+                                                    >
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem
+                                                        @click="
+                                                            openEditDialog(type)
+                                                        "
+                                                    >
+                                                        <LucidePencil
+                                                            class="h-4 w-4"
+                                                        />
+                                                        Edit
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem
+                                                        @click="
+                                                            deleteType(type.id)
+                                                        "
+                                                        :disabled="
+                                                            deleteTypeId ===
+                                                            type.id
+                                                        "
+                                                    >
+                                                        <Loader2
+                                                            v-if="
+                                                                deleteTypeId ===
+                                                                type.id
+                                                            "
+                                                            class="h-4 w-4 animate-spin"
+                                                        />
+                                                        <Trash
+                                                            v-else
+                                                            class="h-4 w-4"
+                                                        />
+                                                        Delete
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
                         </div>
 
                         <!-- Paginate -->

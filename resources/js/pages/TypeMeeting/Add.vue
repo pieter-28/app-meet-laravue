@@ -34,7 +34,7 @@ const open = defineModel<boolean>('open');
             </DialogHeader>
             <form @submit.prevent="$emit('confirm')" class="space-y-4">
                 <div class="space-y-2">
-                    <Label for="add-type_meeting_code">Code</Label>
+                    <Label for="add-type_meeting_code">Type Code</Label>
                     <Input
                         id="add-type_meeting_code"
                         v-model="addForm.type_meeting_code"
@@ -47,7 +47,7 @@ const open = defineModel<boolean>('open');
                     <InputError :message="addForm.errors?.type_meeting_code" />
                 </div>
                 <div class="space-y-2">
-                    <Label for="add-type_meeting_name">Name</Label>
+                    <Label for="add-type_meeting_name">Type Name</Label>
                     <Input
                         id="add-type_meeting_name"
                         v-model="addForm.type_meeting_name"
@@ -59,7 +59,7 @@ const open = defineModel<boolean>('open');
                 </div>
                 <div class="space-y-2">
                     <Label for="add-type_meeting_description"
-                        >Description</Label
+                        >Type Description</Label
                     >
                     <Input
                         id="add-type_meeting_description"

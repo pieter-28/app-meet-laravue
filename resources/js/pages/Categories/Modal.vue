@@ -84,7 +84,7 @@ const open = defineModel<boolean>('open');
                         {{
                             editForm.processing
                                 ? 'Updating...'
-                                : 'Update Category'
+                                : 'Update'
                         }}
                     </Button>
                 </div>

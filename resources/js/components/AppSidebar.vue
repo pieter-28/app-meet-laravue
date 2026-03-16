@@ -9,8 +9,10 @@ import {
     BookText,
 } from 'lucide-vue-next';
 
+import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
+import NavMaster from '@/components/NavMaster.vue';
 import NavUser from '@/components/NavUser.vue';
 import {
     Sidebar,
@@ -23,9 +25,6 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-
-import AppLogo from './AppLogo.vue';
-import NavMaster from '@/components/NavMaster.vue';
 
 const mainNavItems: NavItem[] = [
     {
