@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GrupActivityController;
+use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TypeMeetingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
-use App\Http\Controllers\TypeMeetingController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TopicController;
-use App\Http\Controllers\PlaceController;   
-use App\Http\Controllers\GrupActivityController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -19,7 +20,7 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
 
 Route::middleware(['auth'])->group(function () {
     Route::get('type-meetings/code', [TypeMeetingController::class, 'code']);
@@ -31,4 +32,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('topic', TopicController::class);
     Route::resource('place', PlaceController::class);
     Route::resource('grup-activity', GrupActivityController::class);
+    Route::resource('activity', ActivityController::class);
 });

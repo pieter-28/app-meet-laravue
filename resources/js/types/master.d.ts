@@ -31,3 +31,12 @@ export interface GrupActivity {
     created_at: string;
     updated_at: string;
 }
+
+export interface Activity {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
