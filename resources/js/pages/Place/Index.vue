@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import AlertDialog from '@/components/AlertDialog.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import AlertDialog from '@/components/AlertDialog.vue';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -22,7 +22,7 @@ import { useCrudActions } from '@/composables/useCrudAction';
 import { useOpenModalDialog } from '@/composables/useOpenModalDialog';
 import { usePaginatedFilter } from '@/composables/usePaginatedFilter';
 import AppLayout from '@/layouts/AppLayout.vue';
-import CreatePlace from '@/pages/Place/Create.vue';
+import ModalPlace from '@/pages/Place/Modal.vue';
 import { dashboard } from '@/routes';
 import { Paginated, Place } from '@/types/master';
 import { Head, Link } from '@inertiajs/vue3';
@@ -66,8 +66,8 @@ const { filteredData, getRowNumber } = usePaginatedFilter(
 const {
     form: formData,
     selectedItem,
-    isAddDialogOpen,
-    isEditDialogOpen,
+    mode,
+    isDialogOpen,
     isDeleteDialogOpen,
     openCreateDialog,
     openEditDialog,
@@ -82,7 +82,7 @@ const {
 
 const { store, update, destroy } = useCrudActions(formData, `/place`);
 
-const handleDeleteConfirm = () => {
+const handleDestroy = () => {
     if (!selectedItem.value?.id) return;
 
     destroy(selectedItem.value.id, () => {
@@ -91,24 +91,14 @@ const handleDeleteConfirm = () => {
     });
 };
 
-const handleCreate = () => {
-    store(() => {
-        isAddDialogOpen.value = false;
-        formData.reset();
-        closeDialogs();
-    });
-};
-
 const handleSubmit = () => {
     const onSuccess = () => {
-        isAddDialogOpen.value = false;
-        isEditDialogOpen.value = false;
-        formData.reset();
         closeDialogs();
+        formData.reset();
     };
 
-    if (formData.id) {
-        update(formData.id, onSuccess);
+    if (mode.value === 'edit' && selectedItem.value) {
+        update(selectedItem.value.id, onSuccess);
     } else {
         store(onSuccess);
     }
@@ -314,19 +304,22 @@ const handleSubmit = () => {
             </Card>
         </div>
 
-        <!-- Create Place -->
-        <CreatePlace
-            v-model:open="isAddDialogOpen"
+        <!-- Modal Place -->
+        <ModalPlace
+            v-if="isDialogOpen"
+            v-model:open="isDialogOpen"
             :form="formData"
+            :mode="mode"
             @confirm="handleSubmit"
         />
-        <!-- End Create Place -->
+        <!-- End Modal Place -->
 
         <!-- Delete Confirmation Dialog -->
         <AlertDialog
+            v-if="isDeleteDialogOpen"
             :open="isDeleteDialogOpen"
             @update:open="isDeleteDialogOpen = false"
-            @confirm="handleDeleteConfirm"
+            @confirm="handleDestroy"
         ></AlertDialog>
     </AppLayout>
 </template>

@@ -6,25 +6,27 @@ export function useOpenModalDialog<T extends { id: number }>(
 ) {
     const selectedItem = ref<T | null>(null);
 
-    const isAddDialogOpen = ref(false);
-    const isEditDialogOpen = ref(false);
+    const isDialogOpen = ref(false);
     const isDeleteDialogOpen = ref(false);
+    const mode = ref<'create' | 'edit'>('create');
 
     const form = useForm({ ...defaultForm });
 
     const openCreateDialog = () => {
+        mode.value = 'create';
         form.reset();
-        isAddDialogOpen.value = true;
+        isDialogOpen.value = true;
     };
 
     const openEditDialog = (item: T) => {
+        mode.value = 'edit';
         selectedItem.value = item;
 
         Object.keys(defaultForm).forEach((key) => {
             form[key] = item[key as keyof T] ?? defaultForm[key];
         });
 
-        isEditDialogOpen.value = true;
+        isDialogOpen.value = true;
     };
 
     const openDeleteDialog = (item: T) => {
@@ -33,17 +35,16 @@ export function useOpenModalDialog<T extends { id: number }>(
     };
 
     const closeDialogs = () => {
-        isAddDialogOpen.value = false;
-        isEditDialogOpen.value = false;
+        isDialogOpen.value = false;
         isDeleteDialogOpen.value = false;
     };
 
     return {
         form,
         selectedItem,
+        mode,
 
-        isAddDialogOpen,
-        isEditDialogOpen,
+        isDialogOpen,
         isDeleteDialogOpen,
 
         openCreateDialog,

@@ -15,6 +15,7 @@ import { Loader2 } from 'lucide-vue-next';
 
 defineProps<{
     form: any;
+    mode: 'create' | 'edit';
 }>();
 
 const emit = defineEmits<{
@@ -29,9 +30,19 @@ const open = defineModel<boolean>('open');
     <Dialog v-model:open="open">
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Add Place Meeting</DialogTitle>
+                <DialogTitle>
+                    {{
+                        mode === 'create'
+                            ? 'Add Place Meeting'
+                            : 'Edit Place Meeting'
+                    }}
+                </DialogTitle>
                 <DialogDescription>
-                    Add a new place meeting.
+                    {{
+                        mode === 'create'
+                            ? 'Add a new place meeting.'
+                            : 'Update place meeting.'
+                    }}
                 </DialogDescription>
             </DialogHeader>
             <form @submit.prevent="$emit('confirm')" class="space-y-4">
@@ -74,7 +85,15 @@ const open = defineModel<boolean>('open');
                             v-if="form.processing"
                             class="mr-2 h-4 w-4 animate-spin"
                         />
-                        {{ form.processing ? 'creating...' : 'Create' }}
+                        {{
+                            form.processing
+                                ? mode === 'create'
+                                    ? 'creating...'
+                                    : 'updating...'
+                                : mode === 'create'
+                                  ? 'Create'
+                                  : 'Update'
+                        }}
                     </Button>
                 </div>
             </form>
