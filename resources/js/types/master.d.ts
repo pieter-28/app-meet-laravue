@@ -22,3 +22,12 @@ export interface Paginated<T> {
     per_page: number;
     total: number;
 }
+
+export interface GrupActivity {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}

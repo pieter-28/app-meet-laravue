@@ -7,6 +7,7 @@ use App\Http\Controllers\TypeMeetingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\PlaceController;   
+use App\Http\Controllers\GrupActivityController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -29,4 +30,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('type-meetings', TypeMeetingController::class);
     Route::resource('topic', TopicController::class);
     Route::resource('place', PlaceController::class);
+    Route::resource('grup-activity', GrupActivityController::class);
 });

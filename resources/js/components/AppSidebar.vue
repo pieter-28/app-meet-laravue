@@ -8,6 +8,7 @@ import {
     LayoutGrid,
     BookText,
     Building2,
+    GroupIcon,
 } from 'lucide-vue-next';
 
 import AppLogo from '@/components/AppLogo.vue';
@@ -55,6 +56,11 @@ const masterNavItems: NavItem[] = [
         title: 'Place',
         href: '/place',
         icon: Building2,
+    },
+    {
+        title: 'Grup Activity',
+        href: '/grup-activity',
+        icon: GroupIcon,
     },
 ];
 

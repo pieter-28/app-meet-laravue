@@ -9,6 +9,14 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from '@/components/ui/empty';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -22,11 +30,13 @@ import { useCrudActions } from '@/composables/useCrudAction';
 import { useOpenModalDialog } from '@/composables/useOpenModalDialog';
 import { usePaginatedFilter } from '@/composables/usePaginatedFilter';
 import AppLayout from '@/layouts/AppLayout.vue';
-import ModalPlace from '@/pages/Place/Modal.vue';
+import ModalGrupActivity from '@/pages/GrupActivity/Modal.vue';
 import { dashboard } from '@/routes';
-import { Paginated, Place } from '@/types/master';
+import { formatDateID } from '@/types/dateFormat';
+import { GrupActivity, Paginated } from '@/types/master';
 import { Head, Link } from '@inertiajs/vue3';
 import {
+    List,
     MoreHorizontal,
     Plus,
     Search,
@@ -37,7 +47,7 @@ import {
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
-    places: Paginated<Place>;
+    grupActivities: Paginated<GrupActivity>;
     filters: {
         search?: string;
     };
@@ -49,19 +59,19 @@ const breadcrumbs = [
         href: dashboard().url,
     },
     {
-        title: 'Place',
-        href: '/place',
+        title: 'Grup Activity',
+        href: '/grup-activity',
     },
 ];
 
 const searchQuery = ref('');
 const clearSearch = () => (searchQuery.value = '');
-const placeRef = computed(() => props.places);
+const grupActivityRef = computed(() => props.grupActivities);
 
 const { filteredData, getRowNumber } = usePaginatedFilter(
-    placeRef,
+    grupActivityRef,
     searchQuery,
-    ['name', 'address', 'description'], // bebas field apa saja
+    ['name', 'description'], // bebas field apa saja
 );
 
 const {
@@ -74,14 +84,13 @@ const {
     openEditDialog,
     openDeleteDialog,
     closeDialogs,
-} = useOpenModalDialog<Place>({
+} = useOpenModalDialog<GrupActivity>({
     id: null,
     name: '',
-    address: '',
     description: '',
 });
 
-const { store, update, destroy } = useCrudActions(formData, `/place`);
+const { store, update, destroy } = useCrudActions(formData, `/grup-activity`);
 
 const handleDestroy = () => {
     if (!selectedItem.value?.id) return;
@@ -107,13 +116,13 @@ const handleSubmit = () => {
 </script>
 
 <template>
-    <Head title="Place" />
+    <Head title="Grup Activity" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-12">
             <div>
-                <h1 class="text-xl font-semibold">Place Meeting</h1>
+                <h1 class="text-xl font-semibold">Grup Activity</h1>
                 <p class="text-sm text-muted-foreground">
-                    Manage and organize all place meetings here.
+                    Manage and organize all grup activity meetings here.
                 </p>
             </div>
 
@@ -121,16 +130,16 @@ const handleSubmit = () => {
                 <div>
                     <div class="flex items-center gap-2">
                         <User class="h-4 w-4" />
-                        <p class="font-semibold">List Place Meeting</p>
+                        <p class="font-semibold">List Grup Activity</p>
                     </div>
 
                     <p class="text-sm text-muted-foreground">
-                        Here is the list of all place meetings.
+                        Here is the list of all grup activity meetings.
                     </p>
                 </div>
 
                 <Button
-                    v-if="props.places?.data?.length > 0"
+                    v-if="props.grupActivities?.data?.length > 0"
                     variant="default"
                     size="sm"
                     @click="openCreateDialog"
@@ -139,10 +148,11 @@ const handleSubmit = () => {
                     + Create
                 </Button>
             </div>
+
             <Card>
                 <CardContent>
                     <div
-                        v-if="props.places?.data?.length > 0"
+                        v-if="props.grupActivities?.data?.length > 0"
                         class="mb-4 flex items-center justify-between gap-4"
                     >
                         <div class="relative w-64">
@@ -152,7 +162,7 @@ const handleSubmit = () => {
                             <Input
                                 v-model="searchQuery"
                                 type="search"
-                                placeholder="Search type meetings..."
+                                placeholder="Search grup activity..."
                                 class="pl-8"
                             />
                         </div>
@@ -160,30 +170,36 @@ const handleSubmit = () => {
 
                     <div
                         class="rounded-lg border"
-                        v-if="props.places?.data?.length > 0"
+                        v-if="props.grupActivities?.data?.length > 0"
                     >
                         <Table>
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>No</TableHead>
                                     <TableHead>Name</TableHead>
-                                    <TableHead>Address</TableHead>
                                     <TableHead>Description</TableHead>
+                                    <TableHead>Created At</TableHead>
                                     <TableHead>Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 <TableRow
-                                    v-for="(place, index) in filteredData"
-                                    :key="place.id"
+                                    v-for="(
+                                        grupActivity, index
+                                    ) in filteredData"
+                                    :key="grupActivity.id"
                                 >
                                     <TableCell>{{
                                         getRowNumber(index)
                                     }}</TableCell>
-                                    <TableCell>{{ place.name }}</TableCell>
-                                    <TableCell>{{ place.address }}</TableCell>
                                     <TableCell>{{
-                                        place.description
+                                        grupActivity.name
+                                    }}</TableCell>
+                                    <TableCell>{{
+                                        grupActivity.description
+                                    }}</TableCell>
+                                    <TableCell>{{
+                                        formatDateID(grupActivity.created_at)
                                     }}</TableCell>
                                     <TableCell>
                                         <DropdownMenu>
@@ -206,7 +222,9 @@ const handleSubmit = () => {
                                                 >
                                                 <DropdownMenuItem
                                                     @click="
-                                                        openEditDialog(place)
+                                                        openEditDialog(
+                                                            grupActivity,
+                                                        )
                                                     "
                                                 >
                                                     <SquarePen
@@ -216,7 +234,9 @@ const handleSubmit = () => {
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     @click="
-                                                        openDeleteDialog(place)
+                                                        openDeleteDialog(
+                                                            grupActivity,
+                                                        )
                                                     "
                                                 >
                                                     <Trash2
@@ -233,16 +253,17 @@ const handleSubmit = () => {
                     </div>
 
                     <!-- No Data State -->
-                    <div v-if="props.places.total === 0" class="py-12">
+                    <div v-if="props.grupActivities.total === 0" class="py-12">
                         <Empty>
                             <EmptyHeader>
                                 <EmptyMedia variant="icon">
-                                    <Shield class="h-12 w-12" />
+                                    <List class="h-12 w-12" />
                                 </EmptyMedia>
-                                <EmptyTitle>No Places Yet</EmptyTitle>
+                                <EmptyTitle>No Grup Activity Yet</EmptyTitle>
                                 <EmptyDescription>
-                                    You haven't created any place yet. Get
-                                    started by creating your first place.
+                                    You haven't created any grup activity yet.
+                                    Get started by creating your first grup
+                                    activity.
                                 </EmptyDescription>
                             </EmptyHeader>
                             <EmptyContent>
@@ -266,8 +287,8 @@ const handleSubmit = () => {
                         </div>
                         <h3 class="text-lg font-semibold">No results found</h3>
                         <p class="mt-1 text-sm text-muted-foreground">
-                            No places match your search query. Try adjusting
-                            your filters.
+                            No grup activity match your search query. Try
+                            adjusting your filters.
                         </p>
                         <Button
                             variant="outline"
@@ -281,14 +302,14 @@ const handleSubmit = () => {
                     <!-- Paginate -->
                     <div v-else class="mt-4 flex items-center justify-between">
                         <p class="text-sm text-muted-foreground">
-                            Page {{ props.places.current_page }} of
-                            {{ props.places.last_page }} —
-                            {{ props.places.total }} total data
+                            Page {{ props.grupActivities.current_page }} of
+                            {{ props.grupActivities.last_page }} —
+                            {{ props.grupActivities.total }} total data
                         </p>
 
                         <div class="flex items-center gap-1">
                             <Link
-                                v-for="(link, i) in props.places.links"
+                                v-for="(link, i) in props.grupActivities.links"
                                 :key="i"
                                 :href="link.url ?? ''"
                                 preserve-state
@@ -309,7 +330,7 @@ const handleSubmit = () => {
         </div>
 
         <!-- Modal Place -->
-        <ModalPlace
+        <ModalGrupActivity
             v-if="isDialogOpen"
             v-model:open="isDialogOpen"
             :form="formData"
