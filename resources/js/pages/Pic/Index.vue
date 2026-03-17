@@ -30,10 +30,11 @@ import { useCrudActions } from '@/composables/useCrudAction';
 import { useOpenModalDialog } from '@/composables/useOpenModalDialog';
 import { usePaginatedFilter } from '@/composables/usePaginatedFilter';
 import AppLayout from '@/layouts/AppLayout.vue';
-import ModalGrupActivity from '@/pages/GrupActivity/Modal.vue';
+import ModalPic from '@/pages/Pic/Modal.vue';
 import { dashboard } from '@/routes';
+import { User } from '@/types';
 import { formatDateID } from '@/types/dateFormat';
-import { GrupActivity, Paginated } from '@/types/master';
+import { Paginated, Pic } from '@/types/master';
 import { Head, Link } from '@inertiajs/vue3';
 import {
     List,
@@ -42,12 +43,13 @@ import {
     Search,
     SquarePen,
     Trash2,
-    User,
+    UserIcon,
 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
-    grupActivities: Paginated<GrupActivity>;
+    pics: Paginated<Pic>;
+    users: User[];
 }>();
 
 const breadcrumbs = [
@@ -56,19 +58,19 @@ const breadcrumbs = [
         href: dashboard().url,
     },
     {
-        title: 'Grup Activity',
-        href: '/grup-activity',
+        title: 'PIC',
+        href: '/pic',
     },
 ];
 
 const searchQuery = ref('');
 const clearSearch = () => (searchQuery.value = '');
-const grupActivityRef = computed(() => props.grupActivities);
+const picRef = computed(() => props.pics);
 
 const { filteredData, getRowNumber } = usePaginatedFilter(
-    grupActivityRef,
+    picRef,
     searchQuery,
-    ['name', 'description'], // bebas field apa saja
+    ['name', 'email', 'phone', 'status', 'archievement', 'description'], // bebas field apa saja
 );
 
 const {
@@ -81,13 +83,18 @@ const {
     openEditDialog,
     openDeleteDialog,
     closeDialogs,
-} = useOpenModalDialog<GrupActivity>({
+} = useOpenModalDialog<Pic>({
     id: null,
     name: '',
+    email: '',
+    phone: '',
+    status: 'active',
+    archievement: '',
     description: '',
+    user_id: null,
 });
 
-const { store, update, destroy } = useCrudActions(formData, `/grup-activity`);
+const { store, update, destroy } = useCrudActions(formData, `/pic`);
 
 const handleDestroy = () => {
     if (!selectedItem.value?.id) return;
@@ -113,30 +120,30 @@ const handleSubmit = () => {
 </script>
 
 <template>
-    <Head title="Grup Activity" />
+    <Head title="PIC" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-6 p-12">
             <div>
-                <h1 class="text-xl font-semibold">Grup Activity</h1>
+                <h1 class="text-xl font-semibold">PIC</h1>
                 <p class="text-sm text-muted-foreground">
-                    Manage and organize all grup activity meetings here.
+                    Manage and organize all pic here.
                 </p>
             </div>
 
             <div class="flex items-center justify-between">
                 <div>
                     <div class="flex items-center gap-2">
-                        <User class="h-4 w-4" />
-                        <p class="font-semibold">List Grup Activity</p>
+                        <UserIcon class="h-4 w-4" />
+                        <p class="font-semibold">List PIC</p>
                     </div>
 
                     <p class="text-sm text-muted-foreground">
-                        Here is the list of all grup activity meetings.
+                        Here is the list of all PIC.
                     </p>
                 </div>
 
                 <Button
-                    v-if="props.grupActivities?.data?.length > 0"
+                    v-if="props.pics?.data?.length > 0"
                     variant="default"
                     size="sm"
                     @click="openCreateDialog"
@@ -145,11 +152,10 @@ const handleSubmit = () => {
                     + Create
                 </Button>
             </div>
-
             <Card>
                 <CardContent>
                     <div
-                        v-if="props.grupActivities?.data?.length > 0"
+                        v-if="props.pics?.data?.length > 0"
                         class="mb-4 flex items-center justify-between gap-4"
                     >
                         <div class="relative w-64">
@@ -159,7 +165,7 @@ const handleSubmit = () => {
                             <Input
                                 v-model="searchQuery"
                                 type="search"
-                                placeholder="Search grup activity..."
+                                placeholder="Search type meetings..."
                                 class="pl-8"
                             />
                         </div>
@@ -167,7 +173,7 @@ const handleSubmit = () => {
 
                     <div
                         class="rounded-lg border"
-                        v-if="props.grupActivities?.data?.length > 0"
+                        v-if="props.pics?.data?.length > 0"
                     >
                         <Table>
                             <TableHeader>
@@ -181,22 +187,16 @@ const handleSubmit = () => {
                             </TableHeader>
                             <TableBody>
                                 <TableRow
-                                    v-for="(
-                                        grupActivity, index
-                                    ) in filteredData"
-                                    :key="grupActivity.id"
+                                    v-for="(pic, index) in filteredData"
+                                    :key="pic.id"
                                 >
                                     <TableCell>{{
                                         getRowNumber(index)
                                     }}</TableCell>
+                                    <TableCell>{{ pic.name }}</TableCell>
+                                    <TableCell>{{ pic.description }}</TableCell>
                                     <TableCell>{{
-                                        grupActivity.name
-                                    }}</TableCell>
-                                    <TableCell>{{
-                                        grupActivity.description
-                                    }}</TableCell>
-                                    <TableCell>{{
-                                        formatDateID(grupActivity.created_at)
+                                        formatDateID(pic.created_at)
                                     }}</TableCell>
                                     <TableCell>
                                         <DropdownMenu>
@@ -218,11 +218,7 @@ const handleSubmit = () => {
                                                     >Actions</DropdownMenuLabel
                                                 >
                                                 <DropdownMenuItem
-                                                    @click="
-                                                        openEditDialog(
-                                                            grupActivity,
-                                                        )
-                                                    "
+                                                    @click="openEditDialog(pic)"
                                                 >
                                                     <SquarePen
                                                         class="mr-2 h-4 w-4"
@@ -231,9 +227,7 @@ const handleSubmit = () => {
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     @click="
-                                                        openDeleteDialog(
-                                                            grupActivity,
-                                                        )
+                                                        openDeleteDialog(pic)
                                                     "
                                                 >
                                                     <Trash2
@@ -250,17 +244,16 @@ const handleSubmit = () => {
                     </div>
 
                     <!-- No Data State -->
-                    <div v-if="props.grupActivities.total === 0" class="py-12">
+                    <div v-if="props.pics.total === 0" class="py-12">
                         <Empty>
                             <EmptyHeader>
                                 <EmptyMedia variant="icon">
                                     <List class="h-12 w-12" />
                                 </EmptyMedia>
-                                <EmptyTitle>No Grup Activity Yet</EmptyTitle>
+                                <EmptyTitle>No PIC Yet</EmptyTitle>
                                 <EmptyDescription>
-                                    You haven't created any grup activity yet.
-                                    Get started by creating your first grup
-                                    activity.
+                                    You haven't created any PIC yet. Get started
+                                    by creating your first PIC.
                                 </EmptyDescription>
                             </EmptyHeader>
                             <EmptyContent>
@@ -284,8 +277,8 @@ const handleSubmit = () => {
                         </div>
                         <h3 class="text-lg font-semibold">No results found</h3>
                         <p class="mt-1 text-sm text-muted-foreground">
-                            No grup activity match your search query. Try
-                            adjusting your filters.
+                            No PIC match your search query. Try adjusting your
+                            filters.
                         </p>
                         <Button
                             variant="outline"
@@ -299,14 +292,14 @@ const handleSubmit = () => {
                     <!-- Paginate -->
                     <div v-else class="mt-4 flex items-center justify-between">
                         <p class="text-sm text-muted-foreground">
-                            Page {{ props.grupActivities.current_page }} of
-                            {{ props.grupActivities.last_page }} —
-                            {{ props.grupActivities.total }} total data
+                            Page {{ props.pics.current_page }} of
+                            {{ props.pics.last_page }} —
+                            {{ props.pics.total }} total data
                         </p>
 
                         <div class="flex items-center gap-1">
                             <Link
-                                v-for="(link, i) in props.grupActivities.links"
+                                v-for="(link, i) in props.pics.links"
                                 :key="i"
                                 :href="link.url ?? ''"
                                 preserve-state
@@ -327,11 +320,11 @@ const handleSubmit = () => {
         </div>
 
         <!-- Modal Place -->
-        <ModalGrupActivity
-            v-if="isDialogOpen"
+        <ModalPic
             v-model:open="isDialogOpen"
             :form="formData"
             :mode="mode"
+            :users="props.users"
             @confirm="handleSubmit"
         />
         <!-- End Modal Place -->

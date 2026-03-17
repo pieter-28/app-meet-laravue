@@ -6,6 +6,7 @@ use App\Http\Controllers\GrupActivityController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TypeMeetingController;
+use App\Http\Controllers\PicController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -33,4 +34,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('place', PlaceController::class);
     Route::resource('grup-activity', GrupActivityController::class);
     Route::resource('activity', ActivityController::class);
+    Route::resource('pic', PicController::class);
 });

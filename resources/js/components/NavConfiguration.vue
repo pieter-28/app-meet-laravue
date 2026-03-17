@@ -21,7 +21,7 @@ const { urlIsActive } = useActiveUrl();
 
 <template>
     <SidebarGroup class="px-2 py-0">
-        <SidebarGroupLabel>Master Data</SidebarGroupLabel>
+        <SidebarGroupLabel>Configuration</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
                 <SidebarMenuButton

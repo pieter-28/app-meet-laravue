@@ -9,6 +9,14 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from '@/components/ui/empty';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -30,6 +38,7 @@ import {
     MoreHorizontal,
     Plus,
     Search,
+    Shield,
     SquarePen,
     Trash2,
     User,
@@ -38,9 +47,6 @@ import { computed, ref } from 'vue';
 
 const props = defineProps<{
     places: Paginated<Place>;
-    filters: {
-        search?: string;
-    };
 }>();
 
 const breadcrumbs = [

@@ -25,7 +25,7 @@ export function useCrudActions<T extends { id?: number | null }>(
     const store = (onSuccess?: () => void) => {
         form.post(baseUrl, {
             preserveScroll: true,
-            preserveState: false,
+            preserveState: true,
 
             onStart: () => (processing.value = true),
 
@@ -50,7 +50,7 @@ export function useCrudActions<T extends { id?: number | null }>(
     const update = (id: number, onSuccess?: () => void) => {
         form.put(`${baseUrl}/${id}`, {
             preserveScroll: true,
-            preserveState: false,
+            preserveState: true,
 
             onStart: () => (processing.value = true),
 

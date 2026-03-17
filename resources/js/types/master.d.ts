@@ -1,3 +1,5 @@
+import { User } from '@/types';
+
 export interface Place {
     id: number;
     code: string;
@@ -39,4 +41,18 @@ export interface Activity {
     description: string;
     created_at: string;
     updated_at: string;
+}
+
+export interface Pic {
+    id: number;
+    code: string;
+    name: string;
+    status: 'active' | 'inactive';
+    email?: string;
+    phone?: string;
+    archievement?: string;
+    description?: string;
+    created_at: string;
+    updated_at: string;
+    user?: User;
 }

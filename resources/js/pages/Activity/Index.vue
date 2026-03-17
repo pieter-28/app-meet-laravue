@@ -9,6 +9,14 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from '@/components/ui/empty';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -18,39 +26,28 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import {
-    Empty,
-    EmptyContent,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-} from '@/components/ui/empty';
 import { useCrudActions } from '@/composables/useCrudAction';
 import { useOpenModalDialog } from '@/composables/useOpenModalDialog';
 import { usePaginatedFilter } from '@/composables/usePaginatedFilter';
 import AppLayout from '@/layouts/AppLayout.vue';
 import ModalActivity from '@/pages/Activity/Modal.vue';
 import { dashboard } from '@/routes';
+import { formatDateID } from '@/types/dateFormat';
 import { Activity, Paginated } from '@/types/master';
 import { Head, Link } from '@inertiajs/vue3';
-import { formatDateID } from '@/types/dateFormat';
 import {
+    List,
     MoreHorizontal,
     Plus,
     Search,
     SquarePen,
     Trash2,
     User,
-    List,
 } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
     activities: Paginated<Activity>;
-    filters: {
-        search?: string;
-    };
 }>();
 
 const breadcrumbs = [
@@ -193,7 +190,7 @@ const handleSubmit = () => {
                                     <TableCell>{{
                                         activity.description
                                     }}</TableCell>
-                                     <TableCell>{{
+                                    <TableCell>{{
                                         formatDateID(activity.created_at)
                                     }}</TableCell>
                                     <TableCell>
@@ -227,7 +224,9 @@ const handleSubmit = () => {
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     @click="
-                                                        openDeleteDialog(activity)
+                                                        openDeleteDialog(
+                                                            activity,
+                                                        )
                                                     "
                                                 >
                                                     <Trash2
